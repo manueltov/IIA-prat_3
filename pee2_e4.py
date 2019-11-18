@@ -18,7 +18,7 @@ class PuzzleN(Problem):
         self.d = int(math.sqrt(len(initial)))
 
     def display(self, state):
-        """ print the state please"""
+        """ print the state"""
         output=""
         for i in range(self.d * self.d):
             ch = str(state[i])
@@ -30,14 +30,48 @@ class PuzzleN(Problem):
                 output += "\n"
         print(output)
 
-    def actions (self, estado) :
-        """As acções executáveis neste estado."""
-        """ver indice do zero e se eles estiver nos conjuntos de d elementos
-        ate ao conjunto d-1 entao ele pode descer, se estiver do d ao 1 ele
-        pode subir, e equivalente com posicao no conjunto para saber se
-        direita ou esquerda"""
-        return ()
+    def actions(self, state):
+        rows = list(state)
+        element = 0
+        row_empty = int(rows.index(element)/self.d)
+        col_empty = rows.index(element)%self.d #isto vai dar o numero da coluna 0, 1, 2 ...
+        actions = []
+        if col_empty > 0:
+            actions.append('LEFT')
+        if col_empty < self.d-1:
+            actions.append('RIGHT')
+        if row_empty > 0:
+            actions.append('UP')
+        if row_empty < self.d:
+            actions.append('DOWN')
+        return actions
 
-    def result(self, state, action) :
-        """resultado de fazer tal accao, devolve a nova lista"""
-        """chama metodo swap"""
+    def result(self, state, action):
+        rows = list(state)
+        element = 0
+        row_empty = int(rows.index(element)/self.d)
+        col_empty = rows.index(element)%self.d
+        print("row: ", row_empty)
+        print("col: ", col_empty)
+        new_state = state
+        if action == 'UP':
+            new_row_empty = ((row_empty-1) * self.d)
+            new_state = swap(new_state, row_empty, new_row_empty)
+        if action == 'DOWN':
+            new_row_empty = ((row_empty+1) * self.d)
+            new_state = swap(new_state, row_empty, new_row_empty)
+        if action == 'LEFT':
+            new_col_empty = ((col_empty-1) * self.d)
+            new_state = swap(new_state, col_empty, new_col_empty)
+        if action == 'RIGHT':
+            new_col_empty = ((col_empty+1) * self.d)
+            new_state = swap(new_state, col_empty, new_col_empty)
+        return new_state
+
+def swap(array, a, b):
+    lst = list(array)
+    aux = lst[a]
+    #print(lst)
+    lst[a] = lst[b]
+    lst[b] = aux
+    return tuple(lst)
